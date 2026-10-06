@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NoteNest — Your Campus Marketplace</title>
+<meta name="description" content="NoteNest is a polished campus marketplace for students to buy, sell and exchange textbooks, notes, lab manuals, calculators and drafters.">
+<style>
+:root{
+  --ink:#17221c;
+  --muted:#657067;
+  --cream:#f7f3ea;
+  --paper:#fffdf8;
+  --green:#173f2b;
+  --green2:#285b40;
+  --lime:#d7e7c3;
+  --orange:#ef8b45;
+  --line:#e4e0d5;
+  --shadow:0 18px 50px rgba(24,45,33,.10);
+  --radius:22px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color:var(--ink);
+  background:var(--cream);
+  line-height:1.55;
+}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit}
+.container{width:min(1120px,92%);margin:auto}
+nav{
+  position:sticky;top:0;z-index:20;
+  background:rgba(247,243,234,.92);backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(228,224,213,.8);
+}
+.nav-inner{height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.25rem;letter-spacing:-.03em}
+.logo-mark{
+  width:38px;height:38px;border-radius:12px;background:var(--green);color:white;
+  display:grid;place-items:center;font-size:1.1rem;
+}
+.nav-links{display:flex;gap:25px;color:#4f5a52;font-weight:700;font-size:.93rem}
+.nav-links a:hover{color:var(--green)}
+.nav-cta{padding:10px 16px;background:var(--green);color:white;border-radius:12px;font-weight:800}
+.hero{padding:78px 0 54px}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:50px;align-items:center}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;background:var(--lime);color:var(--green);
+  padding:8px 12px;border-radius:999px;font-size:.8rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em
+}
+h1{font-size:clamp(3rem,7vw,5.8rem);line-height:.95;letter-spacing:-.065em;margin:18px 0 24px}
+.hero p{font-size:1.12rem;color:var(--muted);max-width:620px}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.btn{
+  border:0;cursor:pointer;border-radius:14px;padding:13px 18px;font-weight:850;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px
+}
+.btn-primary{background:var(--green);color:white}
+.btn-secondary{background:white;border:1px solid var(--line);color:var(--green)}
+.btn-orange{background:var(--orange);color:white}
+.hero-card{
+  background:var(--green);color:white;border-radius:32px;padding:28px;box-shadow:var(--shadow);
+  transform:rotate(1deg)
+}
+.hero-card .book-stack{height:260px;position:relative;display:grid;place-items:center}
+.book{
+  position:absolute;width:72%;height:120px;border-radius:10px;box-shadow:0 12px 24px rgba(0,0,0,.18);
+  padding:18px;font-weight:900;display:flex;align-items:end
+}
+.book.one{background:#e8c66b;transform:rotate(-8deg) translateY(-15px)}
+.book.two{background:#cfe2c4;transform:rotate(6deg) translateY(18px)}
+.book.three{background:#ef8b45;transform:rotate(-2deg) translateY(58px)}
+.hero-card small{opacity:.75}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
+.stat{background:rgba(255,255,255,.09);padding:14px;border-radius:15px}
+.stat b{display:block;font-size:1.35rem}.stat span{font-size:.78rem;opacity:.72}
+section{padding:78px 0}
+.section-head{display:flex;justify-content:space-between;gap:30px;align-items:end;margin-bottom:30px}
+.section-head h2{font-size:clamp(2rem,4vw,3.2rem);letter-spacing:-.05em;line-height:1;margin:0}
+.section-head p{max-width:520px;color:var(--muted);margin:0}
+.searchbar{
+  background:white;border:1px solid var(--line);border-radius:18px;padding:10px;
+  display:grid;grid-template-columns:1fr 180px auto;gap:10px;box-shadow:0 10px 30px rgba(24,45,33,.05)
+}
+.searchbar input,.searchbar select,.form input,.form select,.form textarea{
+  width:100%;border:1px solid var(--line);background:#fbfaf6;border-radius:12px;padding:13px 14px;outline:none
+}
+.searchbar input:focus,.form input:focus,.form select:focus,.form textarea:focus{border-color:var(--green)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:24px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+.listing{position:relative;overflow:hidden}
+.tag{display:inline-block;background:var(--lime);color:var(--green);padding:5px 9px;border-radius:999px;font-size:.72rem;font-weight:900}
+.listing h3{margin:14px 0 5px;font-size:1.12rem}
+.meta{color:var(--muted);font-size:.86rem}
+.price{font-size:1.45rem;font-weight:950;margin:18px 0}
+.card-row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:35px}
+.band{background:var(--green);color:white}
+.band .section-head p{color:#c7d0c9}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.step{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:24px}
+.step-no{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--orange);font-weight:900;margin-bottom:20px}
+.step h3{margin:0 0 8px}.step p{color:#cbd4ce;margin:0}
+.split{display:grid;grid-template-columns:.9fr 1.1fr;gap:24px;align-items:start}
+.benefits{display:grid;gap:12px}
+.benefit{display:flex;gap:14px;align-items:flex-start;padding:16px;background:white;border:1px solid var(--line);border-radius:16px}
+.icon{width:38px;height:38px;display:grid;place-items:center;background:var(--lime);border-radius:12px;flex:0 0 auto}
+.form{background:white;border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form textarea{min-height:110px;resize:vertical}
+.full{grid-column:1/-1}
+.note{font-size:.78rem;color:var(--muted);margin-top:10px}
+.metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.metric{background:white;border:1px solid var(--line);border-radius:20px;padding:22px}
+.metric h3{margin:0 0 8px}.metric p{color:var(--muted);margin:0}
+.metric strong{display:block;font-size:2.2rem;color:var(--green);margin-top:10px}
+footer{padding:30px 0;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}
+.footer-row{display:flex;justify-content:space-between;gap:20px;align-items:center}
+.toast{
+  position:fixed;right:18px;bottom:18px;background:var(--green);color:white;padding:14px 18px;
+  border-radius:14px;box-shadow:var(--shadow);display:none;z-index:50
+}
+@media(max-width:850px){
+  .hero-grid,.split{grid-template-columns:1fr}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .steps{grid-template-columns:1fr}
+  .hero-card{transform:none}
+  .nav-links{display:none}
+}
+@media(max-width:600px){
+  .hero{padding-top:48px}
+  h1{font-size:3.3rem}
+  section{padding:55px 0}
+  .grid,.metric-grid,.form-grid{grid-template-columns:1fr}
+  .searchbar{grid-template-columns:1fr}
+  .full{grid-column:auto}
+  .footer-row{align-items:flex-start;flex-direction:column}
+}
+
+/* Professional visual refinement */
+:root{--ink:#10261c;--muted:#4e6577;--cream:#eaf6ff;--paper:#fff;--green:#0f3d2b;--green2:#1c6546;--green3:#e7f1eb;--gold:#d9a441;--orange:#ef8a43;--line:#e5e8e3;--shadow:0 20px 60px rgba(16,38,28,.09);--radius:20px}
+body{background:linear-gradient(135deg,#eaf6ff 0%,#cfe9ff 48%,#9fd2ff 100%);color:var(--ink)}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(circle at 12% 5%,rgba(255,255,255,.55),transparent 30%),radial-gradient(circle at 88% 12%,rgba(67,155,255,.24),transparent 32%),radial-gradient(circle at 50% 100%,rgba(255,255,255,.18),transparent 38%)}
+nav{background:rgba(232,246,255,.78);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.72)}
+.nav-inner{height:76px}.logo-mark{width:40px;height:40px;border-radius:13px;box-shadow:0 7px 20px rgba(15,61,43,.18)}
+.nav-links{gap:28px;font-weight:750}.nav-cta{box-shadow:0 7px 20px rgba(15,61,43,.15)}
+.hero{padding:92px 0 72px}.hero-grid{gap:72px}.hero-card{border-radius:30px;box-shadow:0 24px 65px rgba(28,93,150,.22);transform:none;background:linear-gradient(145deg,#8fd0ff 0%,#4ea6f2 55%,#2384df 100%)}.hero-card:before{content:"";position:absolute;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.07);right:-90px;top:-90px}
+h1{font-size:clamp(3.4rem,7vw,6.5rem);letter-spacing:-.075em}.hero p{font-size:1.12rem}.eyebrow{border:1px solid #d7e6dc;padding:7px 11px;font-size:.72rem}
+.btn{border-radius:12px;transition:.2s}.btn:hover{transform:translateY(-2px)}.btn-primary{box-shadow:0 9px 22px rgba(15,61,43,.15)}
+section{padding:82px 0}.section-head h2{letter-spacing:-.06em}.card{box-shadow:0 8px 28px rgba(16,38,28,.035)}.listing{transition:.22s}.listing:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+.searchbar{border-radius:17px;box-shadow:0 10px 35px rgba(16,38,28,.055)}
+.form{border-radius:23px;box-shadow:var(--shadow)}.metric{box-shadow:0 8px 28px rgba(16,38,28,.035)}
+.band{position:relative;overflow:hidden}.band:before{content:"";position:absolute;width:360px;height:360px;border-radius:50%;border:1px solid rgba(255,255,255,.1);right:-130px;top:-120px}
+
+/* --- NoteNest 3D hero animation --- */
+.hero-card{perspective:1200px;transform-style:preserve-3d}
+.hero-card .book-stack{perspective:900px;transform-style:preserve-3d;animation:nestFloat 5s ease-in-out infinite}
+.hero-card .book{transform-style:preserve-3d;transform-origin:center center;animation:bookOrbit 7s ease-in-out infinite;will-change:transform}
+.hero-card .book.one{animation-delay:-1.2s}
+.hero-card .book.two{animation-delay:-2.8s}
+.hero-card .book.three{animation-delay:-4.1s}
+.hero-card:after{content:"";position:absolute;left:14%;right:14%;bottom:74px;height:25px;border-radius:50%;background:rgba(0,0,0,.25);filter:blur(14px);transform:translateZ(-40px);animation:shadowPulse 5s ease-in-out infinite}
+@keyframes nestFloat{
+  0%,100%{transform:translateY(0) rotateX(0deg) rotateY(0deg)}
+  50%{transform:translateY(-9px) rotateX(2deg) rotateY(-2deg)}
+}
+@keyframes bookOrbit{
+  0%,100%{filter:brightness(1);translate:0 0}
+  25%{filter:brightness(1.05);translate:0 -5px}
+  50%{filter:brightness(1);translate:0 4px}
+  75%{filter:brightness(.98);translate:0 -3px}
+}
+@keyframes shadowPulse{
+  0%,100%{transform:scaleX(.9);opacity:.28}
+  50%{transform:scaleX(1.05);opacity:.18}
+}
+.hero-3d-badge{position:absolute;top:18px;right:18px;z-index:3;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.15);font-size:.68rem;font-weight:800;letter-spacing:.04em;backdrop-filter:blur(8px)}
+@media (prefers-reduced-motion:reduce){
+  .hero-card .book-stack,.hero-card .book,.hero-card:after{animation:none!important}
+}
+
+
+/* ===== COOL 3D / INTERACTIVE POLISH ===== */
+.hero{
+  position:relative;
+  overflow:hidden;
+}
+.hero:before,.hero:after{
+  content:"";position:absolute;border-radius:50%;pointer-events:none;filter:blur(2px);
+}
+.hero:before{
+  width:420px;height:420px;left:-220px;top:40px;
+  background:radial-gradient(circle,rgba(217,164,65,.16),transparent 68%);
+  animation:auroraA 8s ease-in-out infinite alternate;
+}
+.hero:after{
+  width:520px;height:520px;right:-300px;bottom:-220px;
+  background:radial-gradient(circle,rgba(28,101,70,.15),transparent 67%);
+  animation:auroraB 10s ease-in-out infinite alternate;
+}
+.hero-card{
+  transition:transform .15s ease-out,box-shadow .25s ease;
+  transform-style:preserve-3d;
+  overflow:visible;
+}
+.hero-card:hover{
+  box-shadow:0 30px 90px rgba(15,61,43,.24);
+}
+.hero-card .book{
+  cursor:pointer;
+  transition:filter .25s ease;
+}
+.hero-card .book:hover{
+  filter:brightness(1.1) saturate(1.08);
+}
+.hero-card .book:after{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:7px;
+  background:rgba(0,0,0,.12);border-radius:9px 0 0 9px;
+}
+.hero-card .book:before{
+  content:"";position:absolute;right:12px;top:12px;width:28px;height:28px;
+  border-radius:50%;border:1px solid rgba(255,255,255,.38);
+  box-shadow:0 0 18px rgba(255,255,255,.16);
+}
+.hero-card .book.one{box-shadow:0 18px 35px rgba(0,0,0,.25),0 0 35px rgba(229,194,105,.10)}
+.hero-card .book.two{box-shadow:0 18px 35px rgba(0,0,0,.25),0 0 35px rgba(207,224,197,.10)}
+.hero-card .book.three{box-shadow:0 18px 35px rgba(0,0,0,.25),0 0 35px rgba(237,132,64,.14)}
+.hero-3d-badge{
+  animation:badgePulse 2.6s ease-in-out infinite;
+  box-shadow:0 0 0 rgba(255,255,255,0);
+}
+.hero-live{
+  position:absolute;left:18px;bottom:18px;z-index:5;
+  display:flex;align-items:center;gap:7px;
+  padding:7px 10px;border-radius:999px;
+  background:rgba(0,0,0,.16);border:1px solid rgba(255,255,255,.13);
+  backdrop-filter:blur(9px);font-size:.67rem;font-weight:800;color:#fff;
+}
+.hero-live-dot{
+  width:7px;height:7px;border-radius:50%;background:#8ee7a6;
+  box-shadow:0 0 12px #8ee7a6;animation:liveDot 1.4s ease-in-out infinite;
+}
+.hero-particle{
+  position:absolute;width:5px;height:5px;border-radius:50%;
+  background:rgba(255,255,255,.7);box-shadow:0 0 13px rgba(255,255,255,.7);
+  pointer-events:none;z-index:2;
+}
+.p1{left:12%;top:22%;animation:particle1 7s linear infinite}
+.p2{right:14%;top:28%;animation:particle2 9s linear infinite}
+.p3{left:20%;bottom:23%;animation:particle3 8s linear infinite}
+.p4{right:25%;bottom:20%;animation:particle4 6.5s linear infinite}
+@keyframes badgePulse{
+  0%,100%{transform:translateZ(20px);box-shadow:0 0 0 rgba(255,255,255,0)}
+  50%{transform:translateZ(28px);box-shadow:0 0 25px rgba(255,255,255,.08)}
+}
+@keyframes liveDot{50%{transform:scale(1.35);opacity:.65}}
+@keyframes auroraA{to{transform:translate(90px,35px) scale(1.18)}}
+@keyframes auroraB{to{transform:translate(-70px,-35px) scale(1.12)}}
+@keyframes particle1{50%{transform:translate(30px,-25px);opacity:.35}100%{transform:translate(0,0);opacity:.8}}
+@keyframes particle2{50%{transform:translate(-25px,30px);opacity:.3}100%{transform:translate(0,0);opacity:.75}}
+@keyframes particle3{50%{transform:translate(22px,-32px);opacity:.3}100%{transform:translate(0,0);opacity:.8}}
+@keyframes particle4{50%{transform:translate(-30px,-18px);opacity:.35}100%{transform:translate(0,0);opacity:.75}}
+@media(max-width:600px){
+  .hero-particle{display:none}
+}
+
+
+/* Premium 3D tilt */
+.tilt-wrap{perspective:1400px;transform-style:preserve-3d}
+.hero-card{
+  transform-style:preserve-3d;
+  will-change:transform;
+  transition:transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .45s ease;
+  position:relative;
+  overflow:hidden;
+}
+.hero-card::before{
+  content:"";position:absolute;inset:-2px;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(115deg,rgba(255,255,255,.55),transparent 28%,transparent 68%,rgba(255,255,255,.2));
+  opacity:0;transition:opacity .35s ease;z-index:3;
+}
+.hero-card::after{
+  content:"";position:absolute;width:240px;height:240px;border-radius:50%;
+  left:var(--glow-x,50%);top:var(--glow-y,50%);
+  transform:translate(-50%,-50%);
+  background:radial-gradient(circle,rgba(255,255,255,.42),rgba(255,255,255,0) 68%);
+  pointer-events:none;opacity:0;transition:opacity .25s ease;z-index:3;
+}
+.hero-card.is-tilting{
+  transition:transform .08s linear, box-shadow .2s ease;
+  box-shadow:0 32px 70px rgba(24,53,42,.22),0 8px 20px rgba(31,111,74,.12);
+}
+.hero-card.is-tilting::before,.hero-card.is-tilting::after{opacity:1}
+.books{transform-style:preserve-3d;transition:transform .12s linear}
+.book{transition:transform .15s ease-out;transform-style:preserve-3d}
+.book1{--base-rot:-8deg}.book2{--base-rot:4deg}.book3{--base-rot:10deg}
+
+
+/* Extra-polished 3D card */
+.hero-card{isolation:isolate}
+.hero-card .card-top,.hero-card .books,.hero-card .depth{position:relative;z-index:4}
+.hero-card .books{transition:transform .12s linear}
+.hero-card .book{
+  filter:drop-shadow(0 14px 14px rgba(0,0,0,.14));
+  transition:filter .2s ease;
+}
+.hero-card.is-tilting .book{filter:drop-shadow(0 20px 20px rgba(0,0,0,.20))}
+.hero-card.is-tilting .book1{transform:translate3d(-5px,4px,75px) rotate(-9deg)}
+.hero-card.is-tilting .book2{transform:translate3d(0,-8px,120px) rotate(5deg)}
+.hero-card.is-tilting .book3{transform:translate3d(7px,3px,65px) rotate(11deg)}
+.hero-card .card-top span:last-child{
+  transition:transform .3s ease,background .3s ease;
+}
+.hero-card.is-tilting .card-top span:last-child{transform:translateZ(35px) scale(1.04)}
+
+
+/* NEW: Floating glass 3D interaction */
+.tilt-wrap{perspective:1600px;perspective-origin:50% 50%}
+.hero-card{
+  transform-style:preserve-3d;
+  will-change:transform;
+  transition:transform .55s cubic-bezier(.16,1,.3,1),box-shadow .45s ease;
+  overflow:hidden;
+  isolation:isolate;
+}
+.hero-card::before{
+  content:"";position:absolute;inset:-35%;z-index:2;pointer-events:none;
+  background:linear-gradient(120deg,transparent 38%,rgba(255,255,255,.32) 48%,rgba(255,255,255,.08) 52%,transparent 62%);
+  transform:translateX(var(--shine, -45%)) rotate(8deg);
+  transition:transform .12s linear,opacity .25s ease;
+  opacity:0;
+}
+.hero-card::after{
+  content:"";position:absolute;width:330px;height:330px;z-index:2;pointer-events:none;
+  left:var(--spot-x,50%);top:var(--spot-y,50%);
+  transform:translate(-50%,-50%);
+  background:radial-gradient(circle,rgba(255,255,255,.28),transparent 67%);
+  opacity:0;transition:opacity .3s ease;
+}
+.hero-card.is-new-tilt{
+  transition:transform .08s linear,box-shadow .2s ease;
+  box-shadow:0 38px 85px rgba(24,53,42,.24),0 12px 30px rgba(31,111,74,.13);
+}
+.hero-card.is-new-tilt::before,.hero-card.is-new-tilt::after{opacity:1}
+.hero-card .books{transform-style:preserve-3d;transition:transform .08s linear}
+.hero-card .book{
+  transform-style:preserve-3d;
+  transition:transform .12s linear,filter .25s ease;
+}
+.hero-card.is-new-tilt .book{filter:drop-shadow(0 22px 24px rgba(0,0,0,.2))}
+
+
+/* Minimal cursor-follow 3D tilt + soft shine */
+.hero-card{
+  position:relative;
+  overflow:hidden;
+  transform-style:preserve-3d;
+  will-change:transform;
+  transition:transform .18s ease-out,box-shadow .28s ease;
+}
+.hero-card::after{
+  content:"";
+  position:absolute;
+  inset:-20%;
+  pointer-events:none;
+  opacity:0;
+  background:radial-gradient(circle at var(--shine-x,50%) var(--shine-y,50%),rgba(120,190,255,.42),rgba(120,190,255,0) 38%);
+  transition:opacity .22s ease;
+}
+.hero-card.tilting{
+  box-shadow:0 28px 55px rgba(24,53,42,.20),0 10px 24px rgba(70,140,220,.22);
+}
+.hero-card.tilting::after{opacity:1}
+@media(max-width:800px){
+  .hero-card{transition:transform .22s ease-out,box-shadow .28s ease}
+}
+
+
+/* ===== Professional visual system ===== */
+html{scroll-behavior:smooth}
+body{background:
+ radial-gradient(circle at 8% 8%,rgba(215,231,195,.45),transparent 28%),
+ radial-gradient(circle at 92% 18%,rgba(205,229,218,.5),transparent 24%),
+ var(--cream);}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background-image:linear-gradient(rgba(23,63,43,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(23,63,43,.025) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,black,transparent 72%)}
+nav{background:rgba(255,253,248,.78)!important;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid rgba(23,63,43,.08)!important;box-shadow:0 8px 30px rgba(23,63,43,.045);position:sticky!important;top:0;z-index:100}
+.nav-inner{min-height:76px!important}
+.logo{font-size:1.2rem!important;letter-spacing:-.02em}.logo-mark{box-shadow:0 8px 18px rgba(23,63,43,.18);transition:transform .25s ease}.logo:hover .logo-mark{transform:rotate(-8deg) scale(1.06)}
+.nav-links a{position:relative;transition:color .2s ease}.nav-links a:after{content:"";position:absolute;left:0;right:100%;bottom:-7px;height:2px;background:var(--green2);transition:right .25s ease}.nav-links a:hover:after{right:0}
+.nav-cta{box-shadow:0 8px 22px rgba(23,63,43,.16)!important;transition:transform .2s ease,box-shadow .2s ease}.nav-cta:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(23,63,43,.22)!important}
+.hero{padding-top:88px!important;padding-bottom:95px!important;position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;width:420px;height:420px;border-radius:50%;background:rgba(215,231,195,.35);filter:blur(5px);right:-150px;top:-100px;z-index:-1}
+.hero-grid{align-items:center!important;gap:70px!important}
+.eyebrow{border:1px solid rgba(23,63,43,.11);box-shadow:0 5px 18px rgba(23,63,43,.05);background:rgba(255,255,255,.58);backdrop-filter:blur(10px);font-weight:800!important;letter-spacing:.08em!important}
+h1{letter-spacing:-.055em!important;line-height:.96!important;font-size:clamp(3.6rem,7vw,6.6rem)!important;text-wrap:balance}
+h1 em{background:linear-gradient(110deg,#173f2b,#4b805d 55%,#285b40);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:normal}
+.hero p{font-size:1.1rem!important;line-height:1.75!important;max-width:650px!important}
+.actions .btn{transition:transform .2s ease,box-shadow .2s ease}.actions .btn:hover{transform:translateY(-3px)}
+.btn-primary{box-shadow:0 12px 26px rgba(23,63,43,.16)!important}.btn-primary:hover{box-shadow:0 16px 32px rgba(23,63,43,.22)!important}
+.hero-card{border:1px solid rgba(255,255,255,.7)!important;background:linear-gradient(145deg,rgba(255,255,255,.78),rgba(238,245,233,.78))!important;box-shadow:0 30px 70px rgba(23,63,43,.16),inset 0 1px 0 rgba(255,255,255,.9)!important;border-radius:34px!important;min-height:430px;transform-style:preserve-3d;overflow:hidden;position:relative}
+.hero-card:before{content:"";position:absolute;inset:-35%;background:radial-gradient(circle at 35% 25%,rgba(255,255,255,.9),transparent 30%);pointer-events:none;transform:translateZ(40px)}
+.book-stack{transform:translateZ(35px)!important}.book{box-shadow:0 18px 30px rgba(20,45,34,.22)!important;border-radius:8px!important;transition:transform .35s ease,filter .35s ease}.hero-card:hover .book.one{transform:translateZ(12px) rotate(-2deg)}.hero-card:hover .book.two{transform:translateZ(24px) rotate(1deg)}.hero-card:hover .book.three{transform:translateZ(38px) rotate(2deg)}
+section{position:relative}section:nth-of-type(even){background:rgba(255,255,255,.3)}
+.section-head h2{letter-spacing:-.035em!important;font-size:clamp(2rem,4vw,3.2rem)!important}
+.card,.metric,.form{border:1px solid rgba(23,63,43,.09)!important;box-shadow:0 14px 35px rgba(23,63,43,.07)!important;background:rgba(255,255,255,.76)!important;backdrop-filter:blur(12px);transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
+.card:hover,.metric:hover{transform:translateY(-5px);box-shadow:0 22px 45px rgba(23,63,43,.11)!important;border-color:rgba(40,91,64,.18)!important}
+.icon{width:52px!important;height:52px!important;display:grid;place-items:center;background:linear-gradient(145deg,#edf5e7,#fff);border:1px solid rgba(23,63,43,.08);border-radius:16px!important;box-shadow:0 8px 20px rgba(23,63,43,.07)}
+.searchbar{padding:10px!important;border:1px solid rgba(23,63,43,.1)!important;background:rgba(255,255,255,.72)!important;box-shadow:0 14px 35px rgba(23,63,43,.08)!important;border-radius:20px!important;backdrop-filter:blur(12px)}
+.searchbar input,.searchbar select{border-radius:13px!important;background:rgba(255,255,255,.82)!important}
+input,select,textarea{border-color:rgba(23,63,43,.13)!important;background:rgba(255,255,255,.82)!important;transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease}input:focus,select:focus,textarea:focus{border-color:#5b8668!important;box-shadow:0 0 0 4px rgba(91,134,104,.12)!important;outline:none;transform:translateY(-1px)}
+.tag{border:1px solid rgba(23,63,43,.08);box-shadow:0 5px 12px rgba(23,63,43,.05)}
+.price{font-weight:900!important;letter-spacing:-.02em}
+.empty{border:1px dashed rgba(23,63,43,.18)!important;background:rgba(255,255,255,.5)!important;border-radius:20px!important;padding:38px!important;color:var(--muted)}
+.metric strong{font-size:2.8rem!important;letter-spacing:-.05em}
+footer{background:rgba(255,255,255,.35);backdrop-filter:blur(10px)}
+.toast{box-shadow:0 18px 40px rgba(23,63,43,.22)!important;border:1px solid rgba(255,255,255,.3)}
+@media(max-width:850px){.hero{padding-top:62px!important}.hero-grid{gap:42px!important}.hero-card{min-height:390px}}
+@media(max-width:600px){h1{font-size:3.5rem!important}.hero{padding-bottom:65px!important}.hero-card{border-radius:26px!important}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+
+</style>
+</head>
+<body>
+<nav>
+  <div class="container nav-inner">
+    <a class="logo" href="#top"><span class="logo-mark">N</span>NoteNest</a>
+    <div class="nav-links">
+      <a href="#browse">Browse</a>
+      <a href="#sell">Sell / List</a>
+      <a href="#how">How it works</a>
+      <a href="#metrics">Success</a>
+    </div>
+    <a class="nav-cta" href="#sell">List a book</a>
+  </div>
+</nav>
+
+<main id="top">
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="eyebrow">Campus-first textbook exchange</span>
+      <h1>Your campus.<br>Your books.<br><em>One simple place.</em></h1>
+      <p>NoteNest helps college students buy, sell and exchange used textbooks, printed notes and lab manuals within their campus community.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#browse">Browse books →</a>
+        <a class="btn btn-secondary" href="#sell">Sell a book</a>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:18px;margin-top:24px;color:var(--muted);font-size:.88rem;font-weight:700">
+        <span>✓ Student-friendly</span><span>✓ Campus-first</span><span>✓ Simple &amp; local</span>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="book-stack">
+        <div class="book one">SEMESTER<br>TEXTBOOKS</div>
+        <div class="book two">NOTES &<br>LAB MANUALS</div>
+        <div class="book three">PASS IT<br>FORWARD</div>
+      </div>
+      <small>Discover what students already have on campus — and pass your own essentials forward.</small>
+      <div class="stats">
+        <div class="stat"><b>1</b><span>campus at a time</span></div>
+        <div class="stat"><b>3</b><span>core listing types</span></div>
+        <div class="stat"><b>₹</b><span>student-friendly savings</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="browse">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">Browse the nest</span>
+        <h2>Find your next semester essential.</h2>
+      </div>
+      <p>Search by subject, semester or item type. Your new listings will appear here.</p>
+    </div>
+
+    <div class="searchbar">
+      <input id="search" type="search" placeholder="Search books, subjects, notes…">
+      <select id="semester">
+        <option value="">All semesters</option>
+        <option>Semester 2</option>
+        <option>Semester 3</option>
+        <option>Semester 4</option>
+        <option>Semester 5</option>
+        <option>Semester 6</option>
+      </select>
+      <button class="btn btn-primary" onclick="renderListings()">Search</button>
+    </div>
+    <div id="listings" class="grid"></div>
+  </div>
+</section>
+
+<section class="band" id="how">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">Three simple steps</span>
+        <h2>From “I need this” to “found it.”</h2>
+      </div>
+      <p>Keep the journey local, clear and easy for students.</p>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="step-no">1</div><h3>Browse</h3><p>Search the listing page by subject, semester or item type.</p></div>
+      <div class="step"><div class="step-no">2</div><h3>Connect</h3><p>Open the listing and contact the seller through the campus-approved channel.</p></div>
+      <div class="step"><div class="step-no">3</div><h3>Exchange</h3><p>Meet on campus, agree on the exchange and give the material a second life.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="sell">
+  <div class="container split">
+    <div>
+      <span class="eyebrow">Have books to pass on?</span>
+      <h2 style="font-size:clamp(2.2rem,4vw,3.5rem);line-height:1;letter-spacing:-.05em">Give your books a second life.</h2>
+      <p style="color:var(--muted)">Submit a listing with the basic details. In a real launch, this form can connect directly to your website database or WhatsApp workflow.</p>
+      <div class="benefits">
+        <div class="benefit"><div class="icon">📚</div><div><b>Used textbooks</b><br><span class="meta">Course books students may need again next semester.</span></div></div>
+        <div class="benefit"><div class="icon">📝</div><div><b>Printed notes</b><br><span class="meta">Useful revision material and class notes.</span></div></div>
+        <div class="benefit"><div class="icon">🧪</div><div><b>Lab manuals</b><br><span class="meta">Semester-specific practical material.</span></div></div>
+      </div>
+    </div>
+
+    <form class="form" onsubmit="submitListing(event)">
+      <h3 style="margin-top:0">List an item</h3>
+      <div class="form-grid">
+        <input id="name" required placeholder="Your name">
+        <input id="contact" required placeholder="WhatsApp / contact">
+        <input id="item" required placeholder="Book / notes / manual name">
+        <input id="subject" required placeholder="Subject">
+        <select id="sem" required>
+          <option value="">Semester</option>
+          <option>Semester 2</option><option>Semester 3</option><option>Semester 4</option>
+          <option>Semester 5</option><option>Semester 6</option>
+        </select>
+        <select id="type" required>
+          <option value="">Item type</option>
+          <option>Textbook</option><option>Notes</option><option>Lab Manual</option><option>Calculator</option><option>Drafter</option>
+        </select>
+        <input id="price" class="full" placeholder="Expected price / exchange (optional)">
+        <textarea id="details" class="full" placeholder="Condition, edition, useful details…"></textarea>
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-top:14px">Submit listing →</button>
+      <div class="note">Demo mode: submissions are saved only in this browser. Connect a backend/Google Form/WhatsApp to receive real enquiries.</div>
+    </form>
+  </div>
+</section>
+
+<section id="why">
+  <div class="container">
+    <div class="section-head">
+      <div><span class="eyebrow">Why NoteNest?</span><h2>A better way to buy and sell on campus.</h2></div>
+      <p>The concept is designed around a simple marketing problem: students may need used material, but discovery is scattered across informal channels.</p>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="icon">🔎</div><h3>Discoverability</h3><p class="meta">One dedicated place makes available books easier to find than searching multiple chats.</p></div>
+      <div class="card"><div class="icon">🤝</div><h3>Campus trust</h3><p class="meta">A college-community approach keeps the marketplace relevant to the students it serves.</p></div>
+      <div class="card"><div class="icon">♻️</div><h3>Second life</h3><p class="meta">A book finished by one student can become an affordable resource for another.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="metrics">
+  <div class="container">
+    <div class="section-head">
+      <div><span class="eyebrow">Project success</span><h2>How we measure whether it works.</h2></div>
+      <p>These are the two indicators from the marketing plan. They should be tracked from launch and compared over the same period.</p>
+    </div>
+    <div class="metric-grid">
+      <div class="metric">
+        <h3>Indicator 1 — Enquiries / listings</h3>
+        <p>Count weekly enquiries or listings submitted through the webpage or WhatsApp.</p>
+        <strong id="enquiryCount">0</strong>
+        <span class="meta">demo submissions in this browser</span>
+      </div>
+      <div class="metric">
+        <h3>Indicator 2 — Visits</h3>
+        <p>Track webpage visits or Instagram profile visits to understand reach before judging conversion.</p>
+        <strong id="visitCount">1</strong>
+        <span class="meta">page visits in this demo session</span>
+      </div>
+    </div>
+    <div class="card" style="margin-top:18px">
+      <b>Evidence to test before launch</b>
+      <ul class="meta">
+        <li>How many students buy or sell used books each semester?</li>
+        <li>Which informal channels do they currently use?</li>
+        <li>Do students prefer a structured listing page over scattered WhatsApp messages?</li>
+        <li>Does the target audience actually discover campus information through community-style Instagram pages?</li>
+      </ul>
+      <p class="note"><b>Important:</b> these are assumptions to test, not established facts. A short campus survey or poll can validate them.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="container" style="text-align:center">
+    <span class="eyebrow">Ready to make textbooks easier to find?</span>
+    <h2 style="font-size:clamp(2.2rem,5vw,4rem);line-height:1;letter-spacing:-.05em">Make every textbook count.<br>Keep knowledge moving.</h2>
+    <div class="actions" style="justify-content:center">
+      <a class="btn btn-orange" href="#browse">Browse listings</a>
+      <button class="btn btn-secondary" onclick="openWhatsApp()">Buy a book on WhatsApp</button>
+    </div>
+    <p style="color:#cbd4ce;font-size:.8rem;margin-top:16px">Want to buy a book? Use the WhatsApp button to contact NoteNest directly.</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="container footer-row">
+    <div><b style="color:var(--ink)">NoteNest</b> — Second-Hand Textbook & Notes Exchange</div>
+    <div>Campus-first • Student-friendly • Built for the next semester</div>
+  </div>
+</footer>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const WHATSAPP_NUMBER = "9193582371"; // NoteNest WhatsApp contact number
+const INSTAGRAM_URL = "";   // Add your real Instagram profile URL
+
+const defaultListings = [];
+
+if (!localStorage.getItem("notenest_browse_cleared_v1")) {
+  localStorage.removeItem("notenest_listings");
+  localStorage.setItem("notenest_browse_cleared_v1", "1");
+}
+let listings = JSON.parse(localStorage.getItem("notenest_listings") || "null") || defaultListings;
+let visits = Number(localStorage.getItem("notenest_visits") || 0) + 1;
+localStorage.setItem("notenest_visits", visits);
+
+function renderListings(){
+  const q = document.getElementById("search").value.toLowerCase().trim();
+  const sem = document.getElementById("semester").value;
+  const filtered = listings.filter(x =>
+    (!q || `${x.item} ${x.subject} ${x.type} ${x.sem}`.toLowerCase().includes(q)) &&
+    (!sem || x.sem === sem)
+  );
+  const el = document.getElementById("listings");
+  if(!filtered.length){
+    el.innerHTML = '<div class="empty">No listings yet. Use “List an item” to add the first one.</div>';
+    return;
+  }
+  el.innerHTML = filtered.map((x,i)=>`
+    <article class="card listing">
+      <span class="tag">${x.type}</span>
+      <h3>${escapeHtml(x.item)}</h3>
+      <div class="meta">${escapeHtml(x.subject)} • ${escapeHtml(x.sem)}</div>
+      <div class="price">${escapeHtml(x.price || "Contact seller")}</div>
+      <div class="meta">${escapeHtml(x.details || "Student listing")}</div>
+      <div class="card-row" style="margin-top:18px">
+        <button class="btn btn-primary" onclick="contactSeller()">Buy via WhatsApp</button>
+        <span class="tag">Campus</span>
+      </div>
+    </article>`).join("");
+}
+
+function submitListing(e){
+  e.preventDefault();
+  const listing = {
+    item:document.getElementById("item").value,
+    subject:document.getElementById("subject").value,
+    sem:document.getElementById("sem").value,
+    type:document.getElementById("type").value,
+    price:document.getElementById("price").value || "Contact seller",
+    details:document.getElementById("details").value
+  };
+  listings.unshift(listing);
+  localStorage.setItem("notenest_listings", JSON.stringify(listings));
+  const count = Number(localStorage.getItem("notenest_enquiries") || 0) + 1;
+  localStorage.setItem("notenest_enquiries", count);
+  document.getElementById("enquiryCount").textContent = count;
+  e.target.reset();
+  showToast("Listing submitted successfully in this demo.");
+  renderListings();
+  document.getElementById("browse").scrollIntoView({behavior:"smooth"});
+}
+
+function contactSeller(){
+  if(WHATSAPP_NUMBER) openWhatsApp("Hi! I want to buy a book from NoteNest. Please let me know which books are available.");
+  else showToast("Add your real WhatsApp number in the script to enable messaging.");
+}
+function openWhatsApp(message="Hi! I want to buy a book from NoteNest. Please let me know which books are available."){
+  if(!WHATSAPP_NUMBER){
+    showToast("Add your real WhatsApp number in the script before launch.");
+    return;
+  }
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`,"_blank");
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+}
+function showToast(msg){
+  const t=document.getElementById("toast");
+  t.textContent=msg;t.style.display="block";
+  clearTimeout(window.__toast);
+  window.__toast=setTimeout(()=>t.style.display="none",3200);
+}
+document.getElementById("enquiryCount").textContent = localStorage.getItem("notenest_enquiries") || 0;
+document.getElementById("visitCount").textContent = visits;
+renderListings();
+
+
+
+/* NEW 3D interaction */
+
+const card=document.getElementById("tiltCard");
+if(card && !matchMedia("(prefers-reduced-motion: reduce)").matches){
+  card.addEventListener("pointermove",(e)=>{
+    const r=card.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width;
+    const y=(e.clientY-r.top)/r.height;
+    const rotateY=(x-.5)*8;
+    const rotateX=(.5-y)*8;
+    card.style.transform=`perspective(900px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateZ(8px)`;
+    card.style.setProperty("--shine-x",`${(x*100).toFixed(1)}%`);
+    card.style.setProperty("--shine-y",`${(y*100).toFixed(1)}%`);
+    card.classList.add("tilting");
+  });
+  card.addEventListener("pointerleave",()=>{
+    card.style.transform="";
+    card.classList.remove("tilting");
+  });
+}
+renderListings();
+
+
+
+</script>
+
+<style>
+/* Only the hero tilt interaction is customized here. The rest of the website is unchanged. */
+.hero-card{
+  --tilt-x:0deg;--tilt-y:0deg;--shine-x:50%;--shine-y:50%;
+  transform:perspective(1200px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateZ(0);
+  transition:transform .55s cubic-bezier(.2,.75,.25,1), box-shadow .35s ease;
+  will-change:transform;
+}
+.hero-card:before{
+  transition:opacity .35s ease;
+}
+.hero-card.tilt-active{
+  box-shadow:0 34px 85px rgba(15,61,43,.25);
+}
+.hero-card.tilt-active:after{
+  opacity:.95;
+}
+.hero-card .book-stack{
+  transform-style:preserve-3d;
+  transition:transform .55s cubic-bezier(.2,.75,.25,1);
+}
+.hero-card .book{
+  transition:transform .55s cubic-bezier(.2,.75,.25,1), filter .3s ease;
+}
+@media (prefers-reduced-motion:reduce){
+  .hero-card,.hero-card .book-stack,.hero-card .book{transition:none!important;transform:none!important}
+}
+</style>
+<script>
+(function(){
+  const card=document.querySelector('.hero-card');
+  if(!card || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const stack=card.querySelector('.book-stack');
+  const books=[...card.querySelectorAll('.book')];
+  let frame=null, active=false;
+  function reset(){
+    card.style.setProperty('--tilt-x','0deg');
+    card.style.setProperty('--tilt-y','0deg');
+    card.style.setProperty('--shine-x','50%');
+    card.style.setProperty('--shine-y','50%');
+    if(stack) stack.style.transform='translateZ(0)';
+    books.forEach(b=>b.style.transform='');
+    card.classList.remove('tilt-active');
+  }
+  card.addEventListener('pointermove',function(e){
+    if(e.pointerType==='touch') return;
+    const r=card.getBoundingClientRect();
+    const px=(e.clientX-r.left)/r.width;
+    const py=(e.clientY-r.top)/r.height;
+    const x=Math.max(-1,Math.min(1,(px-.5)*2));
+    const y=Math.max(-1,Math.min(1,(py-.5)*2));
+    const rx=-y*7, ry=x*10;
+    if(frame) cancelAnimationFrame(frame);
+    frame=requestAnimationFrame(()=>{
+      card.style.setProperty('--tilt-x',rx.toFixed(2)+'deg');
+      card.style.setProperty('--tilt-y',ry.toFixed(2)+'deg');
+      card.style.setProperty('--shine-x',(px*100).toFixed(1)+'%');
+      card.style.setProperty('--shine-y',(py*100).toFixed(1)+'%');
+      if(stack) stack.style.transform=`translate3d(${(x*5).toFixed(1)}px,${(y*4).toFixed(1)}px,22px)`;
+      books.forEach((b,i)=>{
+        const depth=[1.25,1.7,1.4][i]||1.3;
+        b.style.transform=`translate3d(${(x*8*depth).toFixed(1)}px,${(y*6*depth).toFixed(1)}px,${(Math.abs(x)+Math.abs(y))*8}px)`;
+      });
+      card.classList.add('tilt-active');
+    });
+  });
+  card.addEventListener('pointerenter',()=>active=true);
+  card.addEventListener('pointerleave',()=>{active=false; if(frame) cancelAnimationFrame(frame); reset();});
+  card.addEventListener('pointercancel',reset);
+})();
+</script>
+
+</body>
+</html>
+<style>
+/* Black hero card theme requested */
+.hero-card{
+  background:#050505 !important;
+  color:#fff !important;
+  box-shadow:0 28px 70px rgba(0,0,0,.38) !important;
+}
+.hero-card small{color:#fff !important;opacity:.82 !important}
+.hero-card .stat{background:rgba(255,255,255,.055) !important;border:1px solid rgba(255,255,255,.08)}
+.hero-card .stat b,.hero-card .stat span{color:#fff !important}
+.hero-card:before{background:rgba(255,255,255,.035) !important}
+.hero-card::after{background:radial-gradient(circle at var(--shine-x,50%) var(--shine-y,50%),rgba(255,255,255,.12),rgba(0,0,0,0) 38%) !important}
+</style>
